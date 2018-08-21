@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas movement test</title>
+    <style>
+        .canvas {
+            background: lightgrey;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas class="canvas" width="600" height="300"></canvas>
+    <script>
+        var canvas = document.querySelector('.canvas');
+        var ctx = canvas.getContext('2d');
+        var width = 20;
+        var height = 20;
+        var x = 0;
+        var y = 0;
+        var boatSpeed = 2;
+        var cWidth = canvas.offsetWidth;
+        var cHeight = canvas.offsetHeight;
+
+        ctx.fillStyle = 'rgb(200, 0, 0)';
+        ctx.fillRect(x, y, width, height);
+
+        function arrowKeyDownHandler(e) {
+            // clearSpace(x, y);
+            switch (e.keyCode) {
+                case 37:
+                    if (x > 0) {
+                        x -= boatSpeed;
+                    }
+                    break;
+                case 38:
+                    if (y > 0) {
+                        y -= boatSpeed;
+                    }
+                    break;
+                case 39:
+                    if (x < cWidth - width) {
+                        x += boatSpeed;
+                    }
+                    break;
+                case 40:
+                    if (y < cHeight - height) {
+                        y += boatSpeed;
+                    }
+                    break;
+            }
+            // moveSquare(x, y);
+        };
+
+        function drawIslands() {
+            ctx.fillStyle = 'rgb(0, 200, 0)';
+            ctx.fillRect(100, 20, 100, 75);
+        };
+
+        function drawBoat() {
+            ctx.fillStyle = 'rgb(200, 0, 0)';
+            ctx.fillRect(x, y, width, height);
+        };
+
+        function checkCollision() {
+            if (x + width > 100 && x < 200 && y + height > 20 && y < 95) {
+                console.log('crashed!!')
+            }
+        };
+
+        // using animation frame
+        function draw() {
+            checkCollision();
+            ctx.clearRect(0, 0, cWidth, cHeight);
+            drawIslands();
+            drawBoat();
+            window.requestAnimationFrame(draw);
+        }
+
+        window.requestAnimationFrame(draw);
+
+        // event listeners
+        document.documentElement.addEventListener('keydown', arrowKeyDownHandler);
+    </script>
+</body>
+
+</html>
