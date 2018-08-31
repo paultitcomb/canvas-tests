@@ -7,75 +7,109 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Canvas movement test</title>
     <style>
-        .canvas {
-            background: lightgrey;
+        .hidden {
+            display: none;
+        }
+
+        .boat-canvas,
+        .island-canvas {
+            position: absolute;
+            border: 1px solid lightgrey;
         }
     </style>
 </head>
 
 <body>
-    <canvas class="canvas" width="600" height="300"></canvas>
+    <canvas class="island-canvas" width="600" height="300"></canvas>
+    <canvas class="boat-canvas" width="600" height="300"></canvas>
+    <img src="images/boat.svg" alt="boat svg" class="hidden boat-svg">
     <script>
-        var canvas = document.querySelector('.canvas');
-        var ctx = canvas.getContext('2d');
-        var width = 20;
-        var height = 20;
-        var x = 0;
-        var y = 0;
+        var boatCanvas = document.querySelector('.boat-canvas');
+        var islandCanvas = document.querySelector('.island-canvas');
+        var boatCtx = boatCanvas.getContext('2d');
+        var islandCtx = islandCanvas.getContext('2d');
+        var boat = document.querySelector('.boat-svg');
+        var boatWidth = 50;
+        var boatHeight = 20;
+        var boatX = 50;
+        var boatY = 50;
         var boatSpeed = 2;
-        var cWidth = canvas.offsetWidth;
-        var cHeight = canvas.offsetHeight;
+        var rotateSpeed = 5;
+        var cWidth = boatCanvas.offsetWidth;
+        var cHeight = boatCanvas.offsetHeight;
 
-        ctx.fillStyle = 'rgb(200, 0, 0)';
-        ctx.fillRect(x, y, width, height);
+        // boatCtx.fillStyle = 'rgb(200, 0, 0)';
+        // boatCtx.fillRect(x, y, width, height);
 
         function arrowKeyDownHandler(e) {
-            // clearSpace(x, y);
             switch (e.keyCode) {
                 case 37:
-                    if (x > 0) {
-                        x -= boatSpeed;
-                    }
+                    console.log('left');
+                    rotateBoat(-rotateSpeed);
+                    // boatCtx.clearRect(0, 0, cWidth, cHeight);
+                    // if (x > 0) {
+                    //     x -= boatSpeed;
+                    // }
                     break;
                 case 38:
-                    if (y > 0) {
-                        y -= boatSpeed;
+                    console.log('up');
+                    if (boatY > 0) {
+                        boatY -= boatSpeed;
                     }
                     break;
                 case 39:
-                    if (x < cWidth - width) {
-                        x += boatSpeed;
-                    }
+                    console.log('right');
+                    rotateBoat(rotateSpeed);
+                    // if (x < cWidth - width) {
+                    //     x += boatSpeed;
+                    // }
                     break;
                 case 40:
-                    if (y < cHeight - height) {
-                        y += boatSpeed;
+                    console.log('down');
+                    if (boatY < cHeight - boatHeight) {
+                        boatY += boatSpeed;
                     }
                     break;
             }
-            // moveSquare(x, y);
+        };
+
+        function rotateBoat(rotateSpeed) {
+            var xTranslate = boatWidth / 2 + boatX;
+            var yTranslate = boatHeight / 2 + boatY;
+            var rotateAngle = rotateSpeed * Math.PI / 360;
+            boatCtx.translate(xTranslate, yTranslate);
+            boatCtx.rotate(rotateAngle);
+            boatCtx.translate(-xTranslate, -yTranslate);
+        };
+
+        function clearContexts() {
+            boatCtx.clearRect(0, 0, cWidth, cHeight);
+            boatCtx.beginPath();
+            // islandCtx.clearRect(0, 0, cWidth, cHeight);
         };
 
         function drawIslands() {
-            ctx.fillStyle = 'rgb(0, 200, 0)';
-            ctx.fillRect(100, 20, 100, 75);
+            islandCtx.fillStyle = 'rgb(0, 200, 0)';
+            islandCtx.fillRect(100, 20, 100, 75);
         };
 
         function drawBoat() {
-            ctx.fillStyle = 'rgb(200, 0, 0)';
-            ctx.fillRect(x, y, width, height);
+            clearContexts();
+            // boatCtx.drawImage(boat, 0, 0);
+            boatCtx.fillStyle = 'rgb(200, 0, 0)';
+            boatCtx.fillRect(boatX, boatY, boatWidth, boatHeight);
         };
 
         function checkCollision() {
-            if (x + width > 100 && x < 200 && y + height > 20 && y < 95) {
+            if (boatX + boatWidth > 100 && boatX < 200 && boatY + boatHeight > 20 && boatY < 95) {
                 console.log('crashed!!')
             }
         };
 
         // using animation frame
         function draw() {
+            clearContexts();
             checkCollision();
-            ctx.clearRect(0, 0, cWidth, cHeight);
             drawIslands();
             drawBoat();
             window.requestAnimationFrame(draw);
