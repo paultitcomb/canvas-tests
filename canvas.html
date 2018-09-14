@@ -20,8 +20,8 @@
 </head>
 
 <body>
-    <canvas class="island-canvas" width="600" height="300"></canvas>
-    <canvas class="boat-canvas" width="600" height="300"></canvas>
+    <canvas class="island-canvas" width="800" height="500"></canvas>
+    <canvas class="boat-canvas" width="800" height="500"></canvas>
     <img src="images/boat.svg" alt="boat svg" class="hidden boat-svg">
     <script>
         var boatCanvas = document.querySelector('.boat-canvas');
@@ -35,6 +35,7 @@
         var boatY = 50;
         var boatSpeed = 2;
         var rotateSpeed = 5;
+        var rotationAngle = 0;
         var cWidth = boatCanvas.offsetWidth;
         var cHeight = boatCanvas.offsetHeight;
 
@@ -44,7 +45,7 @@
         function arrowKeyDownHandler(e) {
             switch (e.keyCode) {
                 case 37:
-                    console.log('left');
+                    // console.log('left');
                     rotateBoat(-rotateSpeed);
                     // boatCtx.clearRect(0, 0, cWidth, cHeight);
                     // if (x > 0) {
@@ -58,7 +59,7 @@
                     }
                     break;
                 case 39:
-                    console.log('right');
+                    // console.log('right');
                     rotateBoat(rotateSpeed);
                     // if (x < cWidth - width) {
                     //     x += boatSpeed;
@@ -76,15 +77,18 @@
         function rotateBoat(rotateSpeed) {
             var xTranslate = boatWidth / 2 + boatX;
             var yTranslate = boatHeight / 2 + boatY;
-            var rotateAngle = rotateSpeed * Math.PI / 360;
+            var angle = rotateSpeed * Math.PI / 180;
+            rotationAngle = rotationAngle + angle;
+            rotationAngle += angle;
             boatCtx.translate(xTranslate, yTranslate);
-            boatCtx.rotate(rotateAngle);
+            boatCtx.rotate(angle);
             boatCtx.translate(-xTranslate, -yTranslate);
+
+            console.log(rotationAngle);
         };
 
         function clearContexts() {
             boatCtx.clearRect(0, 0, cWidth, cHeight);
-            boatCtx.beginPath();
             // islandCtx.clearRect(0, 0, cWidth, cHeight);
         };
 
@@ -95,9 +99,13 @@
 
         function drawBoat() {
             clearContexts();
+            boatCtx.beginPath();
             // boatCtx.drawImage(boat, 0, 0);
             boatCtx.fillStyle = 'rgb(200, 0, 0)';
             boatCtx.fillRect(boatX, boatY, boatWidth, boatHeight);
+            // boatCtx.moveTo(boatX, boatY);
+            // boatCtx.lineTo(cWidth, boatY);
+            // boatCtx.stroke();
         };
 
         function checkCollision() {
